@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
@@ -12,12 +12,13 @@ public class GameManager : MonoBehaviour
     public float m_StartDelay = 3f;             
     public float m_EndDelay = 3f;               
     public CameraControl m_CameraControl;       
-    public Text m_MessageText;                  
+    public Text m_MessageText;  
+    public Text RedHp;
+    public Text GreenHp;
     public GameObject[] m_TankPrefabs;
     public TankManager[] m_Tanks;               
     public List<Transform> wayPointsForAI;
-
-    private int m_RoundNumber;                  
+    public int m_RoundNumber;                  
     private WaitForSeconds m_StartWait;         
     private WaitForSeconds m_EndWait;           
     private TankManager m_RoundWinner;          
@@ -28,10 +29,10 @@ public class GameManager : MonoBehaviour
     {
         m_StartWait = new WaitForSeconds(m_StartDelay);
         m_EndWait = new WaitForSeconds(m_EndDelay);
-
         SpawnAllTanks();
         SetCameraTargets();
-
+        RedHp.gameObject.SetActive(true);
+        GreenHp.gameObject.SetActive(true);
         StartCoroutine(GameLoop());
     }
 
@@ -69,6 +70,9 @@ public class GameManager : MonoBehaviour
         yield return StartCoroutine(RoundStarting());
         yield return StartCoroutine(RoundPlaying());
         yield return StartCoroutine(RoundEnding());
+
+        RedHp.text = "Red Tank Max HP: " + (100+ 12.5*(m_RoundNumber));
+        GreenHp.text = "Green Tank Max HP: " + (100+ 25*(m_RoundNumber));
 
         if (m_GameWinner != null) SceneManager.LoadScene(0);
         else StartCoroutine(GameLoop());
@@ -189,4 +193,5 @@ public class GameManager : MonoBehaviour
     {
         for (int i = 0; i < m_Tanks.Length; i++) m_Tanks[i].DisableControl();
     }
+
 }
